@@ -11,6 +11,12 @@ use crate::diagnostic::Diagnostic;
 use crate::rules;
 use crate::validation;
 
+#[cfg(feature = "with-serde")]
+extern crate serde;
+#[cfg(feature = "with-serde")]
+extern crate serde_derive;
+
+use derive_getters::Getters;
 /// A parser instance which receives the individual AIDL files via
 /// Parser::add_content() or Parser::add_file(). Once all the files
 /// have been added, call Parser::parser() to trigger the validation
@@ -68,7 +74,8 @@ where
 
 /// The parse result of 1 file with its corresponding ID as given via
 /// Parser::add_content() or Parser::add_file().
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, PartialEq, Getters)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ParseFileResult<ID>
 where
     ID: Eq + Hash + Clone + Debug,

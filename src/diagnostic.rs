@@ -1,8 +1,20 @@
 use crate::ast::Range;
 use crate::rules;
 use serde_derive::Serialize;
+use serde_derive::Deserialize;
 
-#[derive(Serialize, Clone, Debug, PartialEq, Eq)]
+use serde_repr::*;
+
+
+#[cfg(feature = "with-serde")]
+extern crate serde;
+#[cfg(feature = "with-serde")]
+extern crate serde_derive;
+
+use derive_getters::Getters;
+
+#[derive(Clone, Debug, PartialEq, Eq, Getters)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Diagnostic {
     pub kind: DiagnosticKind,
     pub range: Range,
@@ -15,13 +27,16 @@ pub struct Diagnostic {
     pub related_infos: Vec<RelatedInfo>,
 }
 
-#[derive(Serialize, Clone, Debug, PartialEq, Eq)]
+#[derive(Serialize_repr, Deserialize_repr, Clone, Debug, PartialEq, Eq)]
+#[repr(u8)]
 pub enum DiagnosticKind {
     Error,
     Warning,
 }
 
-#[derive(Serialize, Clone, Debug, PartialEq, Eq)]
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct RelatedInfo {
     pub range: Range,
     pub message: String,
