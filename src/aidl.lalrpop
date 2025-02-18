@@ -391,6 +391,7 @@ AnnotationParam: (String, Option<String>) = {
 
 pub(crate) Value: String = {
     <v:INTEGER> => v.to_string(),
+    <v:HEX_LIT> => v.to_string(),
     <v:FLOAT> => v.to_string(),
     <v:QUOTED_STRING> => v.to_string(),
     <v:BOOLEAN> => v.to_string(),
@@ -409,6 +410,7 @@ pub(crate) AnnotationValue: &'input str = {
 
 pub(crate) EnumValue: &'input str = {
     INTEGER,
+    HEX_LIT,
     FLOAT,
     QUOTED_STRING,
     BOOLEAN,
@@ -461,6 +463,7 @@ match {
     r"(break|case|catch|char|class|continue|default|do|double|else|enum|false|float|for|goto|if|int|long|new|private|protected|public|return|short|static|switch|this|throw|true|try|void|volatile|while)" => RESERVED_KEYWORD,
 } else {
     r"[a-zA-Z_][a-zA-Z0-9_]*" => IDENT,
+    r"0x[0-9A-Fa-f]+" => HEX_LIT,
     r"[0-9]+" => INTEGER,
 } else {
     r"[+-]?(\d*\.)?\d+[f]?" => FLOAT,
